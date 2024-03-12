@@ -1,5 +1,4 @@
 let confirmation = confirm("Would you like to play the game of Rock-Paper-Scissors?");
-let exitConfirmation;
 
 if (confirmation) {
     let playerOption;
@@ -13,7 +12,7 @@ if (confirmation) {
     console.log(playerWinCount); 
     console.log(computerWinCount); 
 
-    for (i=1; i<=5; i++) {
+    outer: for (i=1; i<=5; i++) {
         
         //loop to offset invalid values such as 'null' which we get when pressed 'Cancel' or any other string
         for (;;) {
@@ -28,18 +27,14 @@ if (confirmation) {
                     continue;
                 }
             } else {
-                exitConfirmation = confirm("You have given an invalid input. Would you like to exit the game?");
+                let exitConfirmation = confirm("You have given an invalid input. Would you like to exit the game?");
 
                 if (exitConfirmation) {
-                    break;
+                    break outer;
                 } else {
                     continue;
                 }
             } 
-        }
-
-        if (exitConfirmation) {
-            break;
         }
 
         console.log(playerSelection); 
