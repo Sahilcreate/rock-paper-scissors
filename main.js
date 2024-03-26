@@ -1,80 +1,65 @@
-let confirmation = confirm("Would you like to play the game of Rock-Paper-Scissors?");
+let playerSelection;
+let computerOption;
+let computerSelection;
+let playerWinCount = 0;
+let computerWinCount = 0;
+let result = document.querySelector('#result');
+let score = document.querySelector('#score');
+let finalMessage = document.querySelector('#finalMessage');
+let button = document.querySelector('#buttons');
 
-if (confirmation) {
-    let playerOption;
-    let playerSelection;   
+function disableButton() {
+    button.removeEventListener('click', buttonClickHandler);
 
-    let computerOption;
-    let computerSelection;
+}
 
-    let playerWinCount = 0;
-    let computerWinCount = 0;
-    console.log(playerWinCount); 
-    console.log(computerWinCount); 
+function updateScoreboard() {
+    score.setAttribute('style', 'white-space: pre;');
+    score.textContent = `Player Score: ${playerWinCount} \r\n`;
+    score.textContent += `Computer Score: ${computerWinCount}`;
 
-    outer: for (i=1; i<=5; i++) {
-        
-        //loop to offset invalid values such as 'null' which we get when pressed 'Cancel' or any other string
-        for (;;) {
-            playerOption = prompt(`Round ${i}. Please enter your input:`)
-            if (typeof(playerOption) == 'string') {
-                playerOption = playerOption.toLowerCase().trim();
-                if (playerOption === "rock" || playerOption === "paper" || playerOption === "scissor") {
-                    playerSelection = playerOption;
-                    break;
-                } else {
-                    alert("You have given an invalid input. Please write from 'rock', 'paper', and 'scissor'.");
-                    continue;
-                }
-            } else {
-                let exitConfirmation = confirm("You have given an invalid input. Would you like to exit the game?");
-
-                if (exitConfirmation) {
-                    break outer;
-                } else {
-                    continue;
-                }
-            } 
+    if (playerWinCount == 5 || computerWinCount == 5) {
+        disableButton();
+        if (playerWinCount == 5) {
+            finalMessage.textContent = 'You won the game! Please reload the page to play again.';
+        } else {
+            finalMessage.textContent = 'You lose the game! Please reload the page to play again.';
         }
-
-        console.log(playerSelection); 
-
-        computerOption = ["rock","paper","scissor"];
-        computerSelection = computerOption[(Math.floor(Math.random() * computerOption.length))];
-
-        function playRound(playerSelection, computerSelection) {
-            if ((playerSelection === "rock" && computerSelection === "scissor") || (playerSelection === "paper" && computerSelection === "rock") || (playerSelection === "scissor" && computerSelection === "paper")) {
-                alert (`You Win! ${playerSelection} beats ${computerSelection}. \n Score: ${++playerWinCount} - ${computerWinCount}`);
-            
-            } else if (playerSelection === computerSelection) {
-                alert (`It's a Tie! ${playerSelection} doesn't beat ${computerSelection}. \n Score: ${++playerWinCount} - ${++computerWinCount}`);
-               
-            } else {
-                alert(`You Lose! ${computerSelection} beats ${playerSelection}.
-                \n Score: ${playerWinCount} - ${++computerWinCount}`);
-                
-            }
-        }
-
-        playRound(playerSelection, computerSelection);
-        console.log(playerWinCount); /// 
-        console.log(computerWinCount); ///
     }
-        
-    if (playerWinCount>computerWinCount) {
-            alert(`Congratulations! You won by ${playerWinCount} - ${computerWinCount}.`);
-    } else if (playerWinCount === computerWinCount) {
-            alert(`It's a Tie by ${playerWinCount} - ${computerWinCount}.`);
+}
+
+function playRound(playerSelection, computerSelection) {
+    if ((playerSelection === "rock" && computerSelection === "scissor") || (playerSelection === "paper" && computerSelection === "rock") || (playerSelection === "scissor" && computerSelection === "paper")) {
+        ++playerWinCount;
+        result.textContent = `You Win! ${playerSelection} beats ${computerSelection}.`;
+    } else if (playerSelection === computerSelection) {
+       result.textContent = `It's a Tie! ${playerSelection} doesn't beat ${computerSelection}.`;
     } else {
-            alert(`You Lose! Score is ${playerWinCount} - ${computerWinCount}. Better luck next time.`);
+       ++computerWinCount;
+       result.textContent = `You Lose! ${computerSelection} beats ${playerSelection}.`;
+    }
+    updateScoreboard();
+}
+
+function buttonClickHandler(event) {
+    let target = event.target;
+
+    switch (target.id) {
+        case 'rockButton':
+            playerSelection = 'rock';
+            break;
+        case 'paperButton':
+            playerSelection = 'paper';
+            break;
+        case 'scissorButton':
+            playerSelection = 'scissor';
+            break;
     }
 
-} else {
-    alert ("What the bleedin' 'ell you doin' 'angin' 'round 'ere, mate? Piss off this page before I gotta kick ya out proper, ya bloody wanker!")
+    computerOption = ["rock","paper","scissor"];
+    computerSelection = computerOption[(Math.floor(Math.random() * computerOption.length))];
+
+    playRound(playerSelection, computerSelection);
 }
 
-if (confirmation) {
-    alert("Thanks for playing.");
-} else {
-    alert("Just Kidding. Have a nice day!");
-}
+button.addEventListener('click', buttonClickHandler);
